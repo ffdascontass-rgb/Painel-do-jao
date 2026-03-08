@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema Profissional de Keys</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: white;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    
+    input, button {
+      padding: 12px;
+      margin: 5px;
+      border-radius: 6px;
+      border: none;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+    
+    input {
+      background: #0f172a;
+      color: white;
+      border: 2px solid #334155;
+    }
+    
+    input:focus {
+      outline: none;
+      border-color: #22c55e;
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+    }
+    
+    button {
+      background: #22c55e;
+      cursor: pointer;
+      color: white;
+      font-weight: bold;
+      border: 2px solid #16a34a;
+    }
+    
+    button:hover {
+      background: #16a34a;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(34, 197, 94, 0.4);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    .box {
+      background: #1e293b;
+      padding: 30px;
+      border-radius: 12px;
+      margin: 20px auto;
+      max-width: 800px;
+      text-align: left;
+      border: 1px solid #334155;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2.5em;
+      text-shadow: 0 2px 10px rgba(34, 197, 94, 0.3);
+    }
+    
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #22c55e;
+      font-size: 1.8em;
+    }
+    
+    h3 {
+      text-align: center;
+      margin-top: 20px;
+      margin-bottom: 15px;
+      color: #94a3b8;
+      font-size: 1.2em;
+    }
+    
+    .key {
+      margin: 8px 0;
+      padding: 10px;
+      font-size: 16px;
+      background: #0f172a;
+      border-left: 4px solid #22c55e;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      word-break: break-all;
+    }
+    
+    .admin {
+      color: #22c55e;
+      font-weight: bold;
+    }
+    
+    .stats {
+      margin-top: 20px;
+      padding: 15px;
+      background: #0f172a;
+      border-radius: 8px;
+      font-size: 16px;
+      border: 1px solid #334155;
+    }
+    
+    #keys {
+      margin-top: 15px;
+      max-height: 400px;
+      overflow-y: auto;
+      padding: 10px;
+      background: #0f172a;
+      border-radius: 8px;
+    }
+    
+    #listaUsuarios {
+      background: #0f172a;
+      padding: 15px;
+      border-radius: 8px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    
+    #listaUsuarios p {
+      padding: 8px;
+      border-bottom: 1px solid #334155;
+      margin: 5px 0;
+    }
+    
+    .info-text {
+      text-align: center;
+      padding: 10px;
+      background: #0f172a;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      border-left: 4px solid #22c55e;
+    }
+    
+    .button-group {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin: 15px 0;
+    }
+    
+    .button-group button {
+      flex: 1;
+      min-width: 150px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔐 Sistema Profissional de Keys</h1>
+  
+  <div id="login" class="box">
+    <h2>Login</h2>
+    <input id="user" placeholder="Usuário" autocomplete="username"><br>
+    <input id="pass" type="password" placeholder="Senha" autocomplete="current-password"><br>
+    <button onclick="login()">Entrar</button>
+    <div class="stats" style="margin-top: 20px; color: #94a3b8;">
+      <strong>Demo:</strong><br>
+      Usuário: <code>user</code> | Senha: <code>123</code><br>
+      Admin: <code>admin</code> | Senha: <code>admin123</code>
+    </div>
+  </div>
+  
+  <div id="painel" class="box" style="display:none">
+    <h2>Painel do Usuário</h2>
+    <div class="info-text" id="info"></div>
+    
+    <div class="button-group">
+      <button onclick="gerar()">Gerar 1 Key</button>
+      <button onclick="gerar10()">Gerar 10 Keys</button>
+      <button onclick="gerar100()">Gerar 100 Keys</button>
+      <button onclick="exportar()">📥 Exportar Keys</button>
+      <button onclick="logout()">Logout</button>
+    </div>
+    
+    <div class="stats" id="stats"></div>
+    <div id="keys"></div>
+  </div>
+  
+  <div id="admin" class="box" style="display:none">
+    <h2>👑 Painel Admin</h2>
+    
+    <h3>Criar Novo Usuário</h3>
+    <input id="novoUser" placeholder="Usuário"><br>
+    <input id="novaSenha" placeholder="Senha"><br>
+    <input id="creditosUser" placeholder="Créditos" type="number"><br>
+    <button onclick="criarUsuario()">Criar Usuário</button>
+    
+    <h3>Lista de Usuários</h3>
+    <div id="listaUsuarios"></div>
+    
+    <h3>Ações Admin</h3>
+    <button onclick="logout()" style="background: #dc2626; border-color: #991b1b;">Logout Admin</button>
+  </div>
+  
+  <script>
+    let usuarioAtual = null;
+    let keys = [];
+    
+    // Inicializar dados
+    if (!localStorage.users) {
+      let users = {
+        admin: { senha: "admin123", credits: Infinity, admin: true },
+        user: { senha: "123", credits: 10, admin: false }
+      };
+      localStorage.users = JSON.stringify(users);
+      localStorage.keys = JSON.stringify([]);
+    }
+    
+    function getUsers() {
+      return JSON.parse(localStorage.users);
+    }
+    
+    function saveUsers(users) {
+      localStorage.users = JSON.stringify(users);
+    }
+    
+    function getStoredKeys() {
+      return JSON.parse(localStorage.keys);
+    }
+    
+    function saveStoredKeys() {
+      localStorage.keys = JSON.stringify(keys);
+    }
+    
+    function login() {
+      let u = document.getElementById("user").value.trim();
+      let p = document.getElementById("pass").value;
+      
+      if (!u || !p) {
+        alert("Por favor, preencha usuário e senha");
+        return;
+      }
+      
+      let users = getUsers();
+      if (users[u] && users[u].senha === p) {
+        usuarioAtual = { name: u, ...users[u] };
+        document.getElementById("login").style.display = "none";
+        document.getElementById("painel").style.display = "block";
+        
+        if (usuarioAtual.admin) {
+          document.getElementById("admin").style.display = "block";
+        }
+        
+        keys = getStoredKeys();
+        mostrarInfo();
+        listarUsuarios();
+        mostrarKeys();
+        mostrarStats();
+      } else {
+        alert("❌ Usuário ou senha inválidos!");
+        document.getElementById("pass").value = "";
+      }
+    }
+    
+    function logout() {
+      usuarioAtual = null;
+      keys = [];
+      document.getElementById("login").style.display = "block";
+      document.getElementById("painel").style.display = "none";
+      document.getElementById("admin").style.display = "none";
+      document.getElementById("user").value = "";
+      document.getElementById("pass").value = "";
+    }
+    
+    function mostrarInfo() {
+      if (usuarioAtual.admin) {
+        document.getElementById("info").innerHTML = "👑 <span class='admin'>ADMIN</span> — Créditos: <span class='admin'>∞ (Infinito)</span>";
+      } else {
+        document.getElementById("info").innerHTML = "👤 Usuário: <strong>" + usuarioAtual.name + "</strong> | Créditos: <span class='admin'>" + usuarioAtual.credits + "</span>";
+      }
+    }
+    
+    function gerarKey() {
+      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      let key = "";
+      for (let i = 0; i < 20; i++) {
+        key += chars[Math.floor(Math.random() * chars.length)];
+        if ((i + 1) % 5 == 0 && i < 19) key += "-";
+      }
+      return key;
+    }
+    
+    function gerar(n = 1) {
+      for (let j = 0; j < n; j++) {
+        if (!usuarioAtual.admin) {
+          if (usuarioAtual.credits <= 0) {
+            alert("❌ Você não tem créditos suficientes!");
+            return;
+          }
+          usuarioAtual.credits--;
+          let users = getUsers();
+          users[usuarioAtual.name].credits = usuarioAtual.credits;
+          saveUsers(users);
+        }
+        let key = gerarKey();
+        keys.push(key);
+      }
+      saveStoredKeys();
+      mostrarKeys();
+      mostrarInfo();
+      mostrarStats();
+    }
+    
+    function gerar10() {
+      gerar(10);
+    }
+    
+    function gerar100() {
+      gerar(100);
+    }
+    
+    function mostrarKeys() {
+      let div = document.getElementById("keys");
+      div.innerHTML = "";
+      
+      if (keys.length === 0) {
+        div.innerHTML = "<p style='text-align:center; color: #94a3b8;'>Nenhuma key gerada ainda</p>";
+        return;
+      }
+      
+      keys.forEach((k, index) => {
+        let d = document.createElement("div");
+        d.className = "key";
+        d.innerText = (index + 1) + ". " + k;
+        div.appendChild(d);
+      });
+    }
+    
+    function exportar() {
+      if (keys.length == 0) {
+        alert("❌ Nenhuma key gerada para exportar");
+        return;
+      }
+      
+      let conteudo = "=== SISTEMA PROFISSIONAL DE KEYS ===\n";
+      conteudo += "Exportado em: " + new Date().toLocaleString('pt-BR') + "\n";
+      conteudo += "Usuário: " + usuarioAtual.name + "\n";
+      conteudo += "Total de Keys: " + keys.length + "\n";
+      conteudo += "=====================================\n\n";
+      conteudo += keys.join("\n");
+      
+      let blob = new Blob([conteudo]);
+      let a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "keys_" + usuarioAtual.name + "_" + new Date().getTime() + ".txt";
+      a.click();
+    }
+    
+    function criarUsuario() {
+      let u = document.getElementById("novoUser").value.trim();
+      let s = document.getElementById("novaSenha").value;
+      let c = parseInt(document.getElementById("creditosUser").value);
+      
+      if (!u || !s || isNaN(c)) {
+        alert("❌ Preencha todos os campos corretamente");
+        return;
+      }
+      
+      if (c < 0) {
+        alert("❌ Créditos não podem ser negativos");
+        return;
+      }
+      
+      let users = getUsers();
+      if (users[u]) {
+        alert("❌ Usuário já existe!");
+        return;
+      }
+      
+      users[u] = { senha: s, credits: c, admin: false };
+      saveUsers(users);
+      listarUsuarios();
+      alert("✅ Usuário '" + u + "' criado com sucesso!");
+      document.getElementById("novoUser").value = "";
+      document.getElementById("novaSenha").value = "";
+      document.getElementById("creditosUser").value = "";
+    }
+    
+    function listarUsuarios() {
+      let users = getUsers();
+      let div = document.getElementById("listaUsuarios");
+      div.innerHTML = "";
+      
+      for (let u in users) {
+        let user = users[u];
+        let p = document.createElement("p");
+        let status = user.admin ? "👑 ADMIN" : "👤 USER";
+        let creditos = user.admin ? "∞" : user.credits;
+        p.innerHTML = "<strong>" + status + " " + u + "</strong> | Créditos: " + creditos;
+        div.appendChild(p);
+      }
+    }
+    
+    function mostrarStats() {
+      document.getElementById("stats").innerHTML = "📊 <strong>Total de Keys Geradas:</strong> " + keys.length;
+    }
+  </script>
+</body>
+</html>
